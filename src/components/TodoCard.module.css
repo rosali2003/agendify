@@ -1,0 +1,22 @@
+.todo-body {
+    border-style: solid;
+    border-color: black;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    text-align: center;
+    margin: 5px;
+    border-radius: 5px; 
+    color: white;
+}
+
+.completed-label {
+    padding: 5px;
+}
+
+.delete-button {
+    margin: 5px;
+    border-radius: 5px;
+    
+}

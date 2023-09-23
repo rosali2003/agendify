@@ -1,0 +1,56 @@
+.mainpage-body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+    flex-direction: column;
+}
+
+.widgets-container {
+    /* does not get inherited */
+    display: flex;
+    width: 90%;
+    justify-content: space-evenly;
+    margin: 0 auto;
+}
+
+.todo-list {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.title {
+    font-weight: bold;
+}
+
+h6 {
+    font-weight: bold;
+}
+
+.navbar {
+    background-color:#F4BE25;
+    width:100%;
+    height: 100%;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.calendar-block {
+    background-color: #F4BE25;
+    padding: 5px;
+}
+
+.quote-container {
+    display: flex;
+    align-items: center;
+}
+
+.img {
+    width: 10px;
+    height: 10px;
+}
+
+.auth {
+    width: 100px;
+    height: 100px;
+}

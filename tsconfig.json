@@ -1,0 +1,29 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
+    "experimentalDecorators": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "composite": true,
+    "noEmit": false,
+    "baseUrl": ".",
+    "lib": ["dom", "dom.iterable", "es2021", "scripthost"],
+    "rootDir": ".",
+    "paths": {
+      "*": ["*", "packages/*", "app/*"]
+    },
+    "target": "es2016",
+    "resolveJsonModule": true,
+    "useUnknownInCatchVariables": false,
+    "incremental": true,
+    "jsx": "react-jsx",
+    // turn off configs turned on in strictest
+    "exactOptionalPropertyTypes": false,
+    "noImplicitOverride": false,
+    "noImplicitReturns": false,
+    "noPropertyAccessFromIndexSignature": false,
+    "noUncheckedIndexedAccess": false,
+    "checkJs": false
+  }
+}

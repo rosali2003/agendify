@@ -1,0 +1,9 @@
+.PrimaryButton {
+    background-color: #F4BE25;
+    border-radius: 5px;
+}
+
+.SecondaryButton { 
+    background-color: #D9D9D9;
+    border-radius: 5px;
+}
