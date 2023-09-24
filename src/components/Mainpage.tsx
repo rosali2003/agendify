@@ -1,10 +1,4 @@
-import {
-  useState,
-  useEffect,
-  ChangeEvent,
-  FormEvent,
-  useCallback,
-} from "react";
+import { useState, useEffect, ChangeEvent, FormEvent, useRef } from "react";
 import { TodoCard } from "./TodoCard";
 import styles from "./Mainpage.module.css";
 import React from "react";
@@ -12,15 +6,7 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import { useOpenAIApi } from "./useOpenAIApi";
 import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
-import {
-  collection,
-  doc,
-  getDocs,
-  addDoc,
-  getFirestore,
-  CollectionReference,
-} from "firebase/firestore";
+import { collection, getDocs, addDoc, getFirestore } from "firebase/firestore";
 import {
   getAuth,
   onAuthStateChanged,
@@ -29,8 +15,10 @@ import {
 } from "firebase/auth";
 import { useGoogleCalendar } from "./useGoogleCalendar";
 import Button from "./Button";
-import { gapi } from 'gapi-script';
-
+import { gapi } from "gapi-script";
+import jwt_decode from "jwt-decode";
+declare var google: any;
+// var accessToken = "";
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_API_KEY,
@@ -45,9 +33,9 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
-const analytics = getAnalytics(app);
 
 const provider = new GoogleAuthProvider();
+
 
 const auth = getAuth();
 const handleLogin = () => {
@@ -92,40 +80,95 @@ const Mainpage = () => {
 
   const api = axios.create();
 
+  // const accessTokenRef = useRef<string|null>(null)
   const [newTask, setNewTask] = useState<string>("");
 
   const [generatedIdea, setGeneratedIdea] = useState<string>("");
 
   const { loginGoogleCalendar } = useGoogleCalendar();
-  const fetchGenerated = async () => {
-    console.log("entering");
-    try {
-      const response = await api.post(
-        "http://localhost:3000/pages/ai_request",
-        {
-          ai_request: {
-            prompt: "create list of tasks",
-            ai_model: "ada",
-          },
-        }
-      );
-      console.log("generated text", response.data.generated_idea);
-      setGeneratedIdea(response.data.generated_idea);
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  // const fetchGenerated = async () => {
+  //   console.log("entering");
+  //   try {
+  //     const response = await api.post(
+  //       "http://localhost:3000/pages/ai_request",
+  //       {
+  //         ai_request: {
+  //           prompt: "create list of tasks",
+  //           ai_model: "ada",
+  //         },
+  //       }
+  //     );
+  //     console.log("generated text", response.data.generated_idea);
+  //     setGeneratedIdea(response.data.generated_idea);
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
+
+  // function handleCallbackResponse(response) {
+  //   console.log("Encoded JWT ID token: " + response.credential);
+  //   var userObject = jwt_decode(response.credential);
+  //   console.log({ response });
+  //   console.log("userObject", userObject);
+  //   const client = google.accounts.oauth2.initTokenClient({
+  //     client_id:
+  //       "567748474164-pa6hirvi6nmgdtmi5s0ccs3gma7n9vc3.apps.googleusercontent.com",
+  //     scope: "https://www.googleapis.com/auth/calendar.readonly",
+  //     callback: (response) => {
+  //       // alert(`cali or bust: ${JSON.stringify(response)}`);
+  //       console.log({response, "AHHH":true})
+  //       accessTokenRef.current = response.access_token;
+  //     },
+  //   });
+  //   client.requestAccessToken();
+  // }
 
   // useEffect(() => {
-  //   window.google.accounts.id.initialize({
-  //     client_id: process.env.REACT_APP_CLIENT_ID,
-  //     callback: handleGoogleSignIn,
-  //   })
-  // });
+  //   /* global google */
+  //   google.accounts.id.initialize({
+  //     client_id:
+  //       "567748474164-pa6hirvi6nmgdtmi5s0ccs3gma7n9vc3.apps.googleusercontent.com",
+  //     scope: "email profile https://www.googleapis.com/auth/calendar.events",
+  //     callback: handleCallbackResponse,
+  //   });
 
-  const handleGoogleSignIn = (response) => {
-    console.log("login success")
-  }
+  //   google.accounts.id.renderButton(document.getElementById("auth"), {
+  //     theme: "outline",
+  //     size: "large",
+  //   });
+  // }, []);
+
+  // const createCalendarEvent = async () => {
+  //   console.log("access token in createCalendarEvent", accessTokenRef.current)
+  //   // Define the calendar event
+  //   console.log("creating calendar event");
+  //   const event = {
+  //     'summary': "test event",
+  //     "description": "test event description",
+  //     "start": {
+  //       "dateTime": "2023-10-10T09:00:00-07:00",
+  //       "timeZone": Intl.DateTimeFormat().resolvedOptions().timeZone,
+  //     },
+  //     "end": {
+  //       "dateTime": "2023-11-10T09:00:00-07:00",
+  //       "timeZone": Intl.DateTimeFormat().resolvedOptions().timeZone,
+  //     },
+  //   }
+  //   await fetch('https://www.googleapis.com/calendar/v3/calendars/primary/events', {
+  //     method: "POST",
+  //     headers: {
+  //       'Authorization': `Bearer ${accessTokenRef.current}`,
+  //       'Content-Type': 'application/json',
+  //     },
+  //     body: JSON.stringify(event),
+  //   }).then((data) => {
+  //     return data.json();
+  //   }).then((data) => {
+  //     console.log(data);
+  //     alert(data.toString())
+  //     console.log("return data", data.toString())
+  //   })
+  // };
 
   const fetchTasks = async () => {
     const allTasks = [];
@@ -201,10 +244,9 @@ const Mainpage = () => {
           <button onClick={fetchGenerated}>Quote of the day</button>
           <p>{generatedIdea}</p>
         </section> */}
-        <div className={styles["auth"]}>
-         <div>{loginGoogleCalendar()}</div>
-        </div>
+        <div id="auth"></div>
       </div>
+      {/* <button onClick={createCalendarEvent}>create calendar event</button> */}
     </section>
   );
 };
